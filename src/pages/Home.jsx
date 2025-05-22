@@ -20,6 +20,11 @@ const Home = () => {
       >
         Cerrar sesión
       </button>
+      <button onClick={navigate('/forgot-password')}
+       className="bg-blue-500 text-white px-4 py-2 rounded mt-4"
+      >
+          Reset Password
+      </button>
     </div>
   );
 };
