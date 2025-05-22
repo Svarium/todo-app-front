@@ -26,8 +26,16 @@ export const AuthProvider = ({ children }) => {
     return res.data;
   };
 
+  const logout = async () => {
+  await axios.post("http://localhost:3002/api/v1/logout", null, {
+    withCredentials: true,
+  });
+  setUser(null);
+};
+
+
   return (
-    <AuthContext.Provider value={{ user, register, login }}>
+    <AuthContext.Provider value={{ user, register, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

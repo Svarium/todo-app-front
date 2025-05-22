@@ -19,6 +19,7 @@ const Login = () => {
       } else {
         alert("Inicio de sesión exitoso");
         // Redirigir a home, dashboard u otra página protegida
+        navigate("/home");
       }
     } catch (err) {
       alert(err.response?.data?.message || "Error al iniciar sesión");
