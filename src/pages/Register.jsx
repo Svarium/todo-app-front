@@ -1,0 +1,55 @@
+import { useState } from "react";
+import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
+
+const Register = () => {
+  const [data, setData] = useState({ username: "", email: "", password: "" });
+  const { register } = useAuth();
+  const navigate = useNavigate();
+
+  const handleChange = (e) =>
+    setData({ ...data, [e.target.name]: e.target.value });
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await register(data);
+      alert("Registrado correctamente. Revisa tu email para verificar.");
+      navigate("/login");
+    } catch (err) {
+      alert(err.response?.data?.message || "Error al registrar");
+    }
+  };
+
+  return (
+    <div className="flex justify-center items-center h-screen">
+      <form onSubmit={handleSubmit} className="bg-white p-6 rounded shadow w-80">
+        <h2 className="text-xl font-bold mb-4">Registro</h2>
+        <input
+          type="text"
+          name="username"
+          placeholder="Usuario"
+          className="w-full mb-2 p-2 border"
+          onChange={handleChange}
+        />
+        <input
+          type="email"
+          name="email"
+          placeholder="Email"
+          className="w-full mb-2 p-2 border"
+          onChange={handleChange}
+        />
+        <input
+          type="password"
+          name="password"
+          placeholder="Contraseña"
+          className="w-full mb-4 p-2 border"
+          onChange={handleChange}
+        />
+        <button className="w-full bg-blue-500 text-white p-2 rounded">Registrarse</button>
+      </form>
+    </div>
+  );
+};
+
+export default Register;
