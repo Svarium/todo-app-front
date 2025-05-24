@@ -24,3 +24,23 @@ export const getTasks = async () => {
   const res = await axios.get(`${API}/tasks`, config);
   return res.data;
 };
+
+export const deleteTask = async (id) => {
+  const res = await axios.delete(`${API}/tasks/${id}`, {
+    headers: {
+      Authorization: `Bearer ${getToken()}`
+    }
+  });
+  return res.data;
+};
+
+export const updateTask = async (id, formData) => {
+  const res = await axios.put(`${API}/tasks/${id}`, formData, {
+    headers: {
+      Authorization: `Bearer ${getToken()}`,
+      "Content-Type": "multipart/form-data"
+    }
+  });
+  return res.data;
+};
+

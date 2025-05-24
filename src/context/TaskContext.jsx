@@ -20,14 +20,22 @@ export const TaskProvider = ({ children }) => {
   };
 
   const addTask = async (taskData) => {
-    try {
-      const newTask = await taskService.createTask(taskData);
-      setTasks(prev => [...prev, newTask]);
-      return newTask;
-    } catch (error) {
-      console.error("❌ Error al crear tarea:", error.response?.data || error.message);
-      throw error;
-    }
+    const newTask = await taskService.createTask(taskData);
+    setTasks(prev => [...prev, newTask]);
+    return newTask;
+  };
+
+  const deleteTask = async (id) => {
+    await taskService.deleteTask(id);
+    setTasks(prev => prev.filter(task => task._id !== id));
+  };
+
+  const updateTask = async (id, updatedData) => {
+    const updatedTask = await taskService.updateTask(id, updatedData);
+    setTasks(prev =>
+      prev.map(task => (task._id === id ? updatedTask : task))
+    );
+    return updatedTask;
   };
 
   useEffect(() => {
@@ -35,10 +43,11 @@ export const TaskProvider = ({ children }) => {
   }, []);
 
   return (
-    <TaskContext.Provider value={{ tasks, fetchTasks, addTask, loadingTasks }}>
+    <TaskContext.Provider value={{ tasks, fetchTasks, addTask, deleteTask, updateTask, loadingTasks }}>
       {children}
     </TaskContext.Provider>
   );
 };
+
 
 export const useTasks = () => useContext(TaskContext);

@@ -1,10 +1,39 @@
 import TaskForm from "../components/TaskForm";
 import { useAuth } from "../context/AuthContext";
 import { useTasks } from "../context/TaskContext";
+import { toast } from "react-hot-toast";
 
 const Home = () => {
   const { user } = useAuth();
-  const { tasks, loadingTasks } = useTasks();
+  const { tasks, loadingTasks, deleteTask, updateTask } = useTasks();
+
+  const handleDelete = async (id) => {
+  if (confirm("¿Seguro que querés eliminar esta tarea?")) {
+    try {
+      await deleteTask(id);
+      toast.success("Tarea eliminada");
+    } catch (err) {
+      toast.error("Error al eliminar tarea");
+    }
+  }
+};
+
+const handleEdit = async (task) => {
+  const newTitle = prompt("Nuevo título", task.title);
+  if (!newTitle || newTitle.trim() === "") return;
+
+  const formData = new FormData();
+  formData.append("title", newTitle);
+  formData.append("description", task.description);
+  formData.append("dueDate", task.dueDate);
+
+  try {
+    await updateTask(task._id, formData);
+    toast.success("Tarea actualizada");
+  } catch (err) {
+    toast.error("Error al actualizar tarea");
+  }
+};
 
 return (
     <div className="p-6 max-w-3xl mx-auto space-y-6">
@@ -22,11 +51,27 @@ return (
               key={task._id}
               className="border rounded p-4 shadow-sm bg-gray-50"
             >
+              <div className="flex justify-end gap-2 mt-4">
+                <button
+                  onClick={() => handleEdit(task)}
+                  className="bg-yellow-400 text-white px-3 py-1 rounded hover:bg-yellow-500"
+                >
+                  Editar
+                </button>
+                <button
+                  onClick={() => handleDelete(task._id)}
+                  className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+                >
+                  Eliminar
+                </button>
+              </div>
+
               <h3 className="text-lg font-semibold">{task.title}</h3>
               <p>{task.description}</p>
               <p className="text-sm text-gray-600">
                 Vence: {new Date(task.dueDate).toLocaleDateString()}
               </p>
+              
                         {task.files?.length > 0 && (
               <div className="mt-2">
                 <p className="font-medium">Archivos:</p>
@@ -41,6 +86,7 @@ return (
                       >
                         {file.name}
                       </a>
+                      
                     </li>
                   ))}
                 </ul>
