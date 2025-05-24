@@ -1,50 +1,61 @@
 import { useState } from "react";
-import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 const Login = () => {
-  const [data, setData] = useState({ email: "", password: "" });
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  const handleChange = (e) =>
-    setData({ ...data, [e.target.name]: e.target.value });
+  const [form, setForm] = useState({ email: "", password: "" });
+  const [error, setError] = useState(null);
+
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError(null);
+
     try {
-      const user = await login(data);
-      if (!user.isVerified) {
-        alert("Tu email no está verificado. Por favor, revisá tu correo.");
-      } else {
-        alert("Inicio de sesión exitoso");
-        // Redirigir a home, dashboard u otra página protegida
-        navigate("/home");
-      }
+      await login(form); // 👈 Si hay error real, va al catch
+      navigate("/");     // 👈 redirige al home al loguear correctamente
     } catch (err) {
-      alert(err.response?.data?.message || "Error al iniciar sesión");
+      console.error("Login error:", err);
+      setError("Error al iniciar sesión"); // solo si login() lanza un error real
     }
   };
 
   return (
-    <div className="flex justify-center items-center h-screen">
-      <form onSubmit={handleSubmit} className="bg-white p-6 rounded shadow w-80">
+    <div className="min-h-screen flex justify-center items-center bg-gray-100 p-4">
+      <form onSubmit={handleSubmit} className="bg-white p-6 shadow rounded w-full max-w-sm">
         <h2 className="text-xl font-bold mb-4">Iniciar sesión</h2>
+
+        {error && <div className="text-red-500 text-sm mb-2">{error}</div>}
+
         <input
           type="email"
           name="email"
-          placeholder="Email"
-          className="w-full mb-2 p-2 border"
+          value={form.email}
           onChange={handleChange}
+          placeholder="Email"
+          className="w-full border rounded p-2 mb-3"
+          required
         />
+
         <input
           type="password"
           name="password"
-          placeholder="Contraseña"
-          className="w-full mb-4 p-2 border"
+          value={form.password}
           onChange={handleChange}
+          placeholder="Contraseña"
+          className="w-full border rounded p-2 mb-4"
+          required
         />
-        <button className="w-full bg-green-500 text-white p-2 rounded">Ingresar</button>
+
+        <button type="submit" className="w-full bg-blue-600 text-white rounded py-2">
+          Entrar
+        </button>
       </form>
     </div>
   );
