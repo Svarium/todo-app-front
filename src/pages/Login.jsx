@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom"; // 👈 Añadir Link
 import { useAuth } from "../context/AuthContext";
+import { toast } from "react-hot-toast";
+
 
 const Login = () => {
   const { login } = useAuth();
@@ -21,8 +23,12 @@ const Login = () => {
       await login(form);
       navigate("/");
     } catch (err) {
-      console.error("Login error:", err);
-      setError("Error al iniciar sesión");
+     const messages = err.response?.data?.error;
+      if (Array.isArray(messages)) {
+        messages.forEach((msg) => toast.error(msg));
+      } else {
+        toast.error(messages || "Error al iniciar sesión");
+      }
     }
   };
 

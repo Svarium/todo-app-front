@@ -1,25 +1,33 @@
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
-import { useNavigate, Link } from "react-router-dom"; // 👈 Añadir Link
+import { useNavigate, Link } from "react-router-dom";
+import { toast } from "react-hot-toast"; // 👈
 
 const Register = () => {
   const [data, setData] = useState({ username: "", email: "", password: "" });
   const { register } = useAuth();
   const navigate = useNavigate();
+  const [errors, setErrors] = useState({});
+
 
   const handleChange = (e) =>
     setData({ ...data, [e.target.name]: e.target.value });
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      await register(data);
-      alert("Registrado correctamente. Revisa tu email para verificar.");
-      navigate("/login");
-    } catch (err) {
-      alert(err.response?.data?.message || "Error al registrar");
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  try {
+    await register(data);
+    toast.success("Registrado correctamente. Revisa tu email 📧");
+    navigate("/login");
+  } catch (err) {
+    const messages = err.response?.data?.error;
+    if (Array.isArray(messages)) {
+      messages.forEach((msg) => toast.error(msg));
+    } else {
+      toast.error(messages || "Error al registrar");
     }
-  };
+  }
+};
 
   return (
     <div className="flex justify-center items-center h-screen">
