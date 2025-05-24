@@ -35,36 +35,33 @@ export const AuthProvider = ({ children }) => {
     });
   };
 
-  const getProfile = async () => {
-    const token = getToken();
-    if (!token) {
-      console.log("⚠️ No hay token en getProfile");
-      return;
-    }
+ const getProfile = async () => {
+  const token = getToken();
+  if (!token) {
+    console.log("⚠️ No hay token en getProfile");
+    return;
+  }
 
-    const res = await fetch("http://localhost:3002/api/v1/profile", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+  const res = await fetch("http://localhost:3002/api/v1/profile", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 
-    if (!res.ok) {
-      console.error("❌ Token inválido al pedir perfil");
-      throw new Error("Token inválido");
-    }
+  if (!res.ok) {
+    console.error("❌ Token inválido al pedir perfil");
+    throw new Error("Token inválido");
+  }
 
-    const data = await res.json();
-    setUser(data);
+  const data = await res.json();
+  setUser(data);
 
-    const imgRes = await fetch("http://localhost:3002/api/v1/profile-image", {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+  // Si hay imagen, armar URL absoluta
+  if (data.profileImage) {
+    setProfileImage(`http://localhost:3002${data.profileImage}`);
+  }
+};
 
-    if (imgRes.ok) {
-      const blob = await imgRes.blob();
-      setProfileImage(URL.createObjectURL(blob));
-    }
-  };
 
   // Este useEffect solo se ejecuta si hay un token ya guardado
 useEffect(() => {

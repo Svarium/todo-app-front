@@ -2,7 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 const Navbar = () => {
-  const { user, logout } = useAuth();
+  const { user, logout, profileImage } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = async () => {
@@ -22,6 +22,13 @@ const Navbar = () => {
             <span className="text-sm hidden sm:block">
               Bienvenido, <strong>{user.username}</strong>
             </span>
+            {profileImage && (
+              <img
+                src={profileImage}
+                alt="Perfil"
+                className="w-10 h-10 rounded-full object-cover"
+              />
+            )}
             <button
               onClick={handleLogout}
               className="bg-red-500 hover:bg-red-600 px-4 py-2 rounded text-sm"
