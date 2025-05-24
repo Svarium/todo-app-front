@@ -7,6 +7,7 @@ import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import { useAuth } from "./context/AuthContext";
 import Navbar from "./components/NavBar.jsx";
+import Profile from "./pages/Profile.jsx";
 
 function App() {
   const { user, loading } = useAuth();
@@ -27,6 +28,7 @@ function App() {
         <Route path="/home" element={user ? <Home /> : <Navigate to="/login" />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/profile" element={user ? <Profile /> : <Navigate to="/login" />} />
         <Route path="/verify-email" element={<VerifyEmail />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
