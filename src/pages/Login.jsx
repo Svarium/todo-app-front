@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom"; // 👈 Añadir Link
 import { useAuth } from "../context/AuthContext";
 
 const Login = () => {
@@ -18,11 +18,11 @@ const Login = () => {
     setError(null);
 
     try {
-      await login(form); // 👈 Si hay error real, va al catch
-      navigate("/");     // 👈 redirige al home al loguear correctamente
+      await login(form);
+      navigate("/");
     } catch (err) {
       console.error("Login error:", err);
-      setError("Error al iniciar sesión"); // solo si login() lanza un error real
+      setError("Error al iniciar sesión");
     }
   };
 
@@ -53,9 +53,23 @@ const Login = () => {
           required
         />
 
-        <button type="submit" className="w-full bg-blue-600 text-white rounded py-2">
+        <button type="submit" className="w-full bg-blue-600 text-white rounded py-2 mb-4">
           Entrar
         </button>
+
+        <div className="text-center text-sm space-y-2">
+          <p>
+            ¿No tienes una cuenta?{" "}
+            <Link to="/register" className="text-blue-600 hover:underline">
+              Regístrate
+            </Link>
+          </p>
+          <p>
+            <Link to="/forgot-password" className="text-blue-600 hover:underline">
+              ¿Olvidaste tu contraseña?
+            </Link>
+          </p>
+        </div>
       </form>
     </div>
   );

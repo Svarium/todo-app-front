@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom"; // 👈 Añadir Link
 
 const Register = () => {
   const [data, setData] = useState({ username: "", email: "", password: "" });
@@ -46,7 +46,15 @@ const Register = () => {
           className="w-full mb-4 p-2 border"
           onChange={handleChange}
         />
-        <button className="w-full bg-blue-500 text-white p-2 rounded">Registrarse</button>
+        <button className="w-full bg-blue-500 text-white p-2 rounded mb-4">
+          Registrarse
+        </button>
+        <p className="text-center text-sm">
+          ¿Ya tienes una cuenta?{" "}
+          <Link to="/login" className="text-blue-600 hover:underline">
+            Inicia sesión
+          </Link>
+        </p>
       </form>
     </div>
   );
